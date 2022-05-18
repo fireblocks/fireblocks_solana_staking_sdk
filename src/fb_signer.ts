@@ -115,47 +115,6 @@ export class FbSigner {
 
         }
         
-        // if (operation == "stakeAccount"){
-        //     messages = [
-        //         {
-        //             "content": message
-        //         },
-        //         {
-        //             "content": message,
-        //             "bip44addressIndex": 0,
-        //             "bip44change": 2
-        //         }
-        //     ]
-        //     note = `Going to create a stake account with the following details: \nVault Account ID: ${this.vaultAccountId}\nAmount to stake: ${this.amountToStake}\nStake Account address: ${stakeAccount}`;
-        //     res = this.fbRawSigning(messages, note);
-        // }
-        
-        // else if(operation == "deactivate"){
-        //     note = `Going to deactivate delegation with the following details:\nDelegated Vault Account ID: ${this.vaultAccountId}\nValidator Address: ${this.validatorAddress}\nStaking accound address: ${stakeAccount}`;
-        //     messages = [
-        //         {
-        //             "content": message
-        //         }
-        //     ]
-        //     res = this.fbRawSigning(messages, note);
-        // }
-        // else if(operation == "withdraw"){
-        //     note = `Going to withdraw with the following details:\nDestination Vault Account ID: ${this.vaultAccountId}\nAmount: ${this.amountToWithdraw/LAMPORTS_TO_SOL}\nStake account address: ${stakeAccount}`;
-        //     messages = [
-        //         {
-        //             "content": message
-        //         }
-        //     ]
-        //     res = this.fbRawSigning(messages, note);
-        // }else{
-        //     note = `Going to create a delegation with the following details:\nVault Account ID: ${this.vaultAccountId}\nValidator Address: ${this.validatorAddress}\nStake account address: ${stakeAccount}`;
-        //     messages = [
-        //         {
-        //             "content": message
-        //         }
-        //     ]
-        //     res = this.fbRawSigning(messages, note);
-        // }
 
         return res;
     }
