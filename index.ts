@@ -9,7 +9,7 @@ const apiKey = "<your_fb_api_key>"
 const fireblocks = new FireblocksSDK(apiSecret, apiKey);
 
 const DEVNET: boolean = true;
-const VAULT_ACCOUNT: any = null;
+const VAULT_ACCOUNT: any = '<your_vault_account_id>';
 
 
 const solStaker = new SolStaker(fireblocks, VAULT_ACCOUNT, DEVNET);
