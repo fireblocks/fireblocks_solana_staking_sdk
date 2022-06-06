@@ -11,7 +11,7 @@ const apiKey = "<your_fb_api_key>"
 const DEVNET: boolean = true;
 
 //Set your staking vault account ID here
-const VAULT_ACCOUNT: any = '<your_vault_account_id>';
+const VAULT_ACCOUNT = '<your_vault_account_id>';
 
 
 const fireblocks = new FireblocksSDK(apiSecret, apiKey);
