@@ -16,17 +16,22 @@ export class FbSigner {
     private async waitForTxCompletion(fbTx: CreateTransactionResponse){
         
         let tx = fbTx;
+        let prevStatus;
+    
+        console.log("Transaction's status: " + tx.status);
         while (tx.status != TransactionStatus.COMPLETED) {
+            
             if(tx.status == TransactionStatus.BLOCKED || tx.status == TransactionStatus.FAILED || tx.status == TransactionStatus.REJECTED || tx.status == TransactionStatus.CANCELLED){
                 console.log("Transaction's status: " + tx.status);
                 
-                throw Error("Exiting the operation");
+                throw new Error(tx.status + " Exiting the operation");
             }
-            console.log("Transaction's status:",(await this.fireblocks.getTransactionById(fbTx.id)).status);
-            setTimeout(() => { }, 4000);
-            
+            prevStatus = tx.status;
             tx = await this.fireblocks.getTransactionById(fbTx.id);
-                        
+            if(tx.status != prevStatus){
+                console.log("Transaction's status: " + tx.status);
+            }
+            setTimeout(() => { }, 4000); 
         }
         
         return (await this.fireblocks.getTransactionById(fbTx.id));
@@ -89,7 +94,7 @@ export class FbSigner {
                 break;
             }
             case "deactivate": {
-                note = `Going to deactivate delegation with the following details:\nDelegated Vault Account ID: ${this.vaultAccountId}\nStaking accound address: ${stakeAccount}`;
+                note = `Going to deactivate delegation with the following details:\nDelegated Vault Account ID: ${this.vaultAccountId}\nStaking account address: ${stakeAccount}`;
                 messages = [
                     {
                         "content": message
@@ -109,7 +114,7 @@ export class FbSigner {
                 break;
             }
             default: {
-                throw(`Illegal operation: ${operation}`)
+                throw new Error(`Illegal operation: ${operation}`)
             }
 
 

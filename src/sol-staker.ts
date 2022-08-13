@@ -2,6 +2,8 @@ import { FireblocksSDK } from "fireblocks-sdk";
 import * as web3 from "@solana/web3.js";
 import * as utils from "./utils"
 import { FbSigner } from "./fb_signer";
+import { LAMPORTS_TO_SOL } from "./utils";
+
 
 
 export class SolStaker {
@@ -39,7 +41,7 @@ export class SolStaker {
         
         if(amountToStake){
             if(amountToStake > parseFloat(balance)){
-                throw(`You cannot stake more than the available balance. Available balance: ${balance}, requested amount to stake: ${amountToStake}`)
+                throw new Error(`You cannot stake more than the available balance. Available balance: ${balance}, requested amount to stake: ${amountToStake}`)
             }else if(amountToStake == parseFloat(balance)){
                 balanceToStake = parseFloat(balance) - 0.001;
             }else{
@@ -94,9 +96,8 @@ export class SolStaker {
         });
         
         stakeAccountTx.partialSign(authorityKeyPair);
-        console.log("The signatures were verifed:", stakeAccountTx.verifySignatures())
         
-        await utils.sendRawTX(stakeAccountTx.serialize(), web3, connection)
+        await utils.sendRawTX(stakeAccountTx.serialize(), web3, connection, this.testNet)
     }
 
     /**
@@ -136,7 +137,7 @@ export class SolStaker {
         delegateTransaction.recentBlockhash = nonceAccountHash.nonce;
         delegateTransaction.feePayer = mainPubKey;
 
-
+        
         let bytesToSign = delegateTransaction.serializeMessage();
 
         const signature = await fbSigner.signWithFB(bytesToSign.toString('hex'), "delegate", stakePublicKey.toBase58()); 
@@ -144,9 +145,9 @@ export class SolStaker {
 
         delegateTransaction.partialSign(authorityKeyPair);
         
-        console.log('The signatures were verifed:', delegateTransaction.verifySignatures());        
-
-        await utils.sendRawTX(delegateTransaction.serialize(), web3, connection);
+        
+        
+        await utils.sendRawTX(delegateTransaction.serialize(), web3, connection, this.testNet);
     }
 
     /**
@@ -186,9 +187,8 @@ export class SolStaker {
         deactivateTx.addSignature(mainPubKey, Buffer.from((signature.signedMessages[0].signature.fullSig), 'hex'));
 
         deactivateTx.partialSign(authorityKeyPair);
-        console.log("The signatures were verifed:", deactivateTx.verifySignatures())
         
-        await utils.sendRawTX(deactivateTx.serialize(), web3, connection);
+        await utils.sendRawTX(deactivateTx.serialize(), web3, connection, this.testNet);
 
     }
     /**
@@ -245,8 +245,37 @@ export class SolStaker {
         withdrawTx.addSignature(mainPubKey, Buffer.from((signature.signedMessages[0].signature.fullSig), 'hex'));
         withdrawTx.partialSign(authorityKeyPair);
 
-        console.log("The signatures were verifed:", withdrawTx.verifySignatures())
+        await utils.sendRawTX(withdrawTx.serialize(), web3, connection, this.testNet);
+    }
 
-        await utils.sendRawTX(withdrawTx.serialize(), web3, connection);
+    public async getStakedBalance(){
+        const stakePublicKey = new web3.PublicKey(Buffer.from(await utils.getStakeAccountKey(this.fireblocks, this.vaultAccountId, this.testNet), 'hex'));
+        //const stakePublicKey = new web3.PublicKey("DMoVRbadED8zvNo2UDmQ1hsm67tuY8U4BkhFvMH1mQqh");
+        
+        const connection = await this.getConnection();
+        const total = await connection.getBalance(stakePublicKey);
+        
+        const activationEpoch = this.testNet? 310 : 320;
+        const currentEpoch = await connection.getEpochInfo();
+        
+        let rewards = 0;
+        console.log("Calculating your rewards, please wait:")
+        for(let i = 1; i < currentEpoch.epoch - activationEpoch; i++){
+            try{
+                let epoch = (await connection.getInflationReward(
+                    [stakePublicKey],
+                    activationEpoch + i
+                ));    
+                if(epoch[0]){
+                    rewards += Number(epoch[0].amount);
+                }
+            }catch(e){
+                console.log(e)
+            }
+        }
+        console.log("Total Staked Balance:", total/LAMPORTS_TO_SOL + " SOL")
+        console.log("Rewards Balance:", rewards/LAMPORTS_TO_SOL + " SOL")
+        
+        return {rewards, total}
     }
 }

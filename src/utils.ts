@@ -15,10 +15,13 @@ export async function getStakeAccountKey(fireblocks: FireblocksSDK, vaultAccount
     })).publicKey;
 }
 
-export async function sendRawTX(rawTx: any, web3: any, connection: any){
+export async function sendRawTX(rawTx: any, web3: any, connection: any, testNet: any){
+    let cluster = "cluster=mainnet-beta";
+    if(testNet)
+        cluster = "cluster=devnet"
     try{
         const txRes = await web3.sendAndConfirmRawTransaction(connection, rawTx);
-        console.log("Success. Transaction Hash:\n", txRes)
+        console.log("Success. Transaction Hash:\n", txRes + `\n\nExplorer Link: \nhttps://explorer.solana.com/tx/${txRes}?${cluster}`)
     }catch(e){
         console.log("Failed\n",e)
     }

@@ -4,14 +4,14 @@ import { FireblocksSDK } from "fireblocks-sdk";
 import { SolStaker } from "./src/sol-staker"
 
 //Provide the API key and the path to the RSA secret key
-const apiSecret = fs.readFileSync(path.resolve(__dirname, '<path_to_your_secret_key>'), "utf8"); 
-const apiKey = "<your_fb_api_key>"
+const apiSecret = fs.readFileSync(path.resolve(__dirname, '/Users/slavaserebriannyi/api_keys/fireblocks_secret.key'), "utf8"); 
+const apiKey = "b3eeb1d6-afbd-f55d-0ccc-910d41479622"
 
 //Set to false if you wish to work on mainnet
-const DEVNET: boolean = true;
+const DEVNET: boolean = false;
 
 //Set your staking vault account ID here
-const VAULT_ACCOUNT = '<your_vault_account_id>';
+const VAULT_ACCOUNT = '6';
 
 
 const fireblocks = new FireblocksSDK(apiSecret, apiKey);
@@ -19,9 +19,9 @@ const solStaker = new SolStaker(fireblocks, VAULT_ACCOUNT, DEVNET);
 
 (async() => {
 
-    // await solStaker.createStakeAccount('<amount_to_stake>');
-    // await solStaker.delegate('<validator_address>')
-    // await solStaker.deactivate();
-    // await solStaker.withdrawStakedBalance('<amount_to_withdraw>')
+    //await solStaker.createStakeAccount('1');
+    //await solStaker.delegate('G87TwgErAW2qsqg5KCSaR6mheJK7942JXxfp2o7XbUYV')
+    //await solStaker.deactivate();
+    await solStaker.withdrawStakedBalance();
     
 })();
