@@ -30,5 +30,8 @@ const solStaker = new SolStaker(fireblocks, VAULT_ACCOUNT, DEVNET);
 
     //Withdraw Staked:
     //await solStaker.withdrawStakedBalance();
+
+    //Get Staked Balance:
+    //await solStaker.getStakedBalance()
     
 })();
