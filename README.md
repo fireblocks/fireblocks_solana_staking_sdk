@@ -46,7 +46,7 @@ Void. Prints the transaction hash of the successful operation or an error log.
 
  
 
-###Delegate
+### Delegate
 ```
 delegate('<validator_address>')
 ```
@@ -63,7 +63,7 @@ Void. Prints the transaction hash of the successful operation or an error log.
 
 
 
-###Deactivate
+### Deactivate
 ```
 deactivate()
 ```
