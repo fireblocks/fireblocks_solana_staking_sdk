@@ -2,10 +2,12 @@ import fs from "fs";
 import path from "path";
 import { FireblocksSDK } from "fireblocks-sdk";
 import { SolStaker } from "./src/sol-staker"
+require('dotenv').config();
+
 
 //Provide the API key and the path to the RSA secret key
-const apiSecret = fs.readFileSync(path.resolve(__dirname, 'path_to_private_key'), "utf8"); 
-const apiKey = "api_key"
+const apiSecret = fs.readFileSync(path.resolve(__dirname, process.env.API_SECRET_PATH), "utf8"); 
+const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
 
 //Set to false if you wish to work on mainnet
 const DEVNET: boolean = false;
