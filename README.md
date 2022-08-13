@@ -1,92 +1,100 @@
-# sol_staking_sdk
+# Fireblocks Solana Staking SDK
 
 Solana staking in Fireblocks
 
 ## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+1. Clone this repo locally
+2. cd into the directory
+3. Create .env file with the following parameters:
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/slava23/sol_staking_sdk.git
-git branch -M main
-git push -uf origin main
+    API_SECRET_PATH - the path to your RSA secret key
+    API_KEY - your Fireblocks API key
+```
+4. Install typescript globally: 
+```
+    npm install -g typescript
 ```
 
-## Integrate with your tools
+## Using the CLI
 
-- [ ] [Set up project integrations](https://gitlab.com/slava23/sol_staking_sdk/-/settings/integrations)
+Run the following command and follow the instructions in the terminal:
+```
+    ts-node cli.ts
+```
 
-## Collaborate with your team
+## SDK functions
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Create stake account
+```
+createStakeAccount('<amount_to_stake>')
+```
 
-## Test and Deploy
+This function creates a staking account on the Solana blockchain controlled by the SOL wallet in your Fireblocks vault and sets the amount to be staked. This special stake account is a prerequisite for staking on the Solana blockchain. 
 
-Use the built-in continuous integration in GitLab.
+The amount in the stake account can’t be changed after this call.
+The stake account is not shown in the Fireblocks console but appears in Solana block explorers and can be queried on-chain.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**Parameters:**
 
-***
+```
+amount_to_stake; optional - The amount of SOL to stake out of the total balance of the wallet. The entire wallet balance will be staked if this value is not provided. There is a minimum requirement of 0.01 SOL.
+```
 
-# Editing this README
+**Returns:**
+Void. Prints the transaction hash of the successful operation or an error log.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+ 
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### Delegate
+```
+delegate('<validator_address>')
+```
+This function delegates the staked amount set in the previous createStakeAccount call to a validator address and initiates the actual delegation process. The staked amount will be moved from your SOL vault account balance into the stake sub-account but remains under the ownership of your original SOL wallet. The delegated funds enter an activation period and will start to earn rewards after two to three days typically.
 
-## Name
-Choose a self-explaining name for your project.
+This function should only be called once for any createStakeAccount call.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**Parameters:**
+```
+validator_address - string - The validator address is provided by the staking provider. Your assets are delegated to the owner of this address.
+```
+**Returns:**
+Void. Prints the transaction hash of the successful operation or an error log.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Deactivate
+```
+deactivate()
+```
+Deactivate is required to undelegate assets and stop staking entirely. Deactivate must be called before withdrawing the staked amount and rewards. Once this function is called, the funds in the stake sub-account start a deactivation period, which may take several days.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+**Returns:**
+Void. Prints the transaction hash of the successful operation or an error log.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+ 
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Withdraw staked balance:
+```
+withdrawStakedBalance('<amount_to_withdraw>')
+```
+The withdraw function moves the staked assets and the rewards from the stake sub-account back to the controlling vault account. Withdraw is called after the deactivate function has been called and the cooldown period is complete. 
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+After a successful withdrawal, the original SOL vault account balance will show all unstaked assets, including the rewards.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+**Parameters:**
+```
+amount_to_withdraw - string; optional - The amount of SOL to withdraw out of the total stake account balance. The entire stake account balance will be withdrawn if a value is not provided.
+```
+**Returns:**
+Void. Prints the transaction hash of the successful operation or an error log.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### Get Staked Balance:
+```
+getStakedBalance()
+```
+The get staked balance function returns the total staked balance and the received rewards that are currently on the staking account.
+Calculation of the rewards might take up to a couple of minutes, please be patient.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+**Returns:**
+Void. Prints the total and the rewards balance.
