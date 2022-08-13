@@ -250,7 +250,6 @@ export class SolStaker {
 
     public async getStakedBalance(){
         const stakePublicKey = new web3.PublicKey(Buffer.from(await utils.getStakeAccountKey(this.fireblocks, this.vaultAccountId, this.testNet), 'hex'));
-        //const stakePublicKey = new web3.PublicKey("DMoVRbadED8zvNo2UDmQ1hsm67tuY8U4BkhFvMH1mQqh");
         
         const connection = await this.getConnection();
         const total = await connection.getBalance(stakePublicKey);

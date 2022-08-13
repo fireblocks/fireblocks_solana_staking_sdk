@@ -20,19 +20,8 @@ const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
         name: "vaId",
         message: 'Enter Vault Account ID'
     });
-    
-    const operationsList: inquirer.QuestionCollection = {
-        type: "list",
-        name: "staking",
-        message: 'Choose Staking Operation',
-        choices: [
-            'Create Stake Account',
-            'Delegate',
-            'Deactivate',
-            'Withdraw staked amount',
-            'Get Rewards info'
-        ]
-    };
+    if(!Number(vault.vaId) || (Number(vault.vaId) < 0 || Number(vault.vaId) > 4000000000))
+        throw new Error("Wrong vault account ID input. ID should be an integer between 0 to N.");
     
     const mainnet = await inquirer.prompt<any>({
         type: "list",
@@ -46,6 +35,19 @@ const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
 
     if(mainnet.confirm == "Yes")
         DEVNET = false;
+
+    const operationsList: inquirer.QuestionCollection = {
+        type: "list",
+        name: "staking",
+        message: 'Choose Staking Operation',
+        choices: [
+            'Create Stake Account',
+            'Delegate',
+            'Deactivate',
+            'Withdraw staked amount',
+            'Get Rewards info'
+        ]
+    };
             
     const solStaker = new SolStaker(fireblocks, vault.vaId, DEVNET);
     const operation = await inquirer.prompt<any>(operationsList);
@@ -58,7 +60,9 @@ const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
                 name: "amount",
                 message: 'Enter the amount to stake'
             });
-            
+            if(!Number(amount.amount))
+                throw new Error("Wrong amount input");
+
             const confirmStakeAccount = await inquirer.prompt<any>({
                 type: "list",
                 name: "confirm",
@@ -82,6 +86,8 @@ const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
                 name: "validator",
                 message: 'Enter the validator address'
             });
+            if((delegate.validator).length != 44)
+                throw new Error("Wrong validator address input")
 
             const confirmDelegate = await inquirer.prompt<any>({
                 type: "list",
