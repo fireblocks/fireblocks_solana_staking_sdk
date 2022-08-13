@@ -4,8 +4,9 @@ Solana staking in Fireblocks
 
 ## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
+1. Clone this repo locally
+2. cd into the directory
+3. 
 Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
 ## Add your files
