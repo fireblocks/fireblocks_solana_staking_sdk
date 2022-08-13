@@ -6,8 +6,11 @@ Solana staking in Fireblocks
 
 1. Clone this repo locally
 2. cd into the directory
-3. 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+3. Create .env file with the following parameters:
+```
+    API_SECRET_PATH - the path to your RSA secret key
+    API_KEY - your Fireblocks API key
+```
 
 ## Add your files
 
