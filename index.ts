@@ -10,13 +10,11 @@ const apiSecret = fs.readFileSync(path.resolve(__dirname, process.env.API_SECRET
 const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
 
 //Set to false if you wish to work on mainnet
-const DEVNET: boolean = false;
+const DEVNET = false;
 
 //Set your staking vault account ID here
-const VAULT_ACCOUNT = 'you_vault_ID';
+const VAULT_ACCOUNT = 'your_vault_ID';
 
-
-const fireblocks = new FireblocksSDK(apiSecret, apiKey);
 const solStaker = new SolStaker(fireblocks, VAULT_ACCOUNT, DEVNET);
 
 (async() => {
