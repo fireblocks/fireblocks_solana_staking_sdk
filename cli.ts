@@ -1,4 +1,3 @@
-
 import inquirer = require("inquirer");
 import { SolStaker } from "./src/sol-staker";
 import { FireblocksSDK } from "fireblocks-sdk";
