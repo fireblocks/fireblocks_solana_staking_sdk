@@ -2,7 +2,6 @@
 import inquirer = require("inquirer");
 import { SolStaker } from "./src/sol-staker";
 import { FireblocksSDK } from "fireblocks-sdk";
-import * as path from 'path'
 import * as fs from 'fs'
 import { LAMPORTS_TO_SOL } from "./src/utils";
 require('dotenv').config();
@@ -10,7 +9,7 @@ require('dotenv').config();
 
 
 var DEVNET = true;
-const apiSecret = fs.readFileSync(path.resolve(__dirname, process.env.API_SECRET_PATH), "utf8"); 
+const apiSecret = fs.readFileSync((process.env.API_SECRET_PATH), "utf8"); 
 const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
 
 (async () => {
@@ -20,8 +19,12 @@ const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
         name: "vaId",
         message: 'Enter Vault Account ID'
     });
-    if(!Number(vault.vaId) || (Number(vault.vaId) < 0 || Number(vault.vaId) > 4000000000))
-        throw new Error("Wrong vault account ID input. ID should be an integer between 0 to N.");
+    if(!Number(vault.vaId) && Number(vault.vaId)!= 0){
+        console.log(Number(vault.vaId))
+        throw new Error("Wrong vault account ID input - should be a number ");
+    }
+    else if((Number(vault.vaId) < 0 || Number(vault.vaId) > 4000000000))
+        throw new Error("ID should be an integer between 0 to N.")
     
     const mainnet = await inquirer.prompt<any>({
         type: "list",
