@@ -1,4 +1,3 @@
-
 import inquirer = require("inquirer");
 import { SolStaker } from "./src/sol-staker";
 import { FireblocksSDK } from "fireblocks-sdk";
@@ -12,9 +11,14 @@ var DEVNET = true;
 const apiSecret = fs.readFileSync((process.env.API_SECRET_PATH), "utf8"); 
 const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
 
-
 async function waitToProceed(){
-    await inquirer.prompt({ type: "input", message: "Press 'Enter' to continue", name: "doesNotMatter" });
+    await inquirer.prompt(
+        { 
+            type: "input", 
+            message: "Press 'Enter' to continue", 
+            name: "doesNotMatter" 
+        }
+    );
 }
 
 (async () => {
