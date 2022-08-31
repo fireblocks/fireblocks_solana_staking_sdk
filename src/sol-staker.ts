@@ -247,7 +247,10 @@ export class SolStaker {
 
         await utils.sendRawTX(withdrawTx.serialize(), web3, connection, this.testNet);
     }
-
+    /**
+        * Prints the total staked and the rewards information.  
+        * @returns rewards and total amounts
+        */
     public async getStakedBalance(){
         const stakePublicKey = new web3.PublicKey(Buffer.from(await utils.getStakeAccountKey(this.fireblocks, this.vaultAccountId, this.testNet), 'hex'));
         
