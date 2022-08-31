@@ -33,7 +33,7 @@ export async function getNonceInfo(web3: any, testNet: boolean){
     let authorityKeyPair: any;
 
     if(testNet){
-        nonceAccount = web3.Keypair.fromSecretKey(Uint8Array.from(nonceAuth.accounts[Math.floor(Math.random() * 5)]));
+        nonceAccount = web3.Keypair.fromSecretKey(Uint8Array.from(testNonceAuth.accounts[Math.floor(Math.random() * 10)]));
         authorityKeyPair = web3.Keypair.fromSecretKey(Uint8Array.from(testNonceAuth.authority));
     }else{
         nonceAccount = web3.Keypair.fromSecretKey(Uint8Array.from(nonceAuth.accounts[Math.floor(Math.random() * 5)]));
