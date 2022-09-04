@@ -31,7 +31,7 @@ export class SolStaker {
         * @returns Void. Prints the transaction hash of the successful operation or error log 
         */
 
-    public async createStakeAccount(amountToStake?: any){
+    public async createStakeAccount(amountToStake?: any): Promise <boolean>{
         
         if(typeof(amountToStake) == 'string'){
             amountToStake = parseFloat(amountToStake);
@@ -97,14 +97,15 @@ export class SolStaker {
         
         stakeAccountTx.partialSign(authorityKeyPair);
         
-        await utils.sendRawTX(stakeAccountTx.serialize(), web3, connection, this.testNet)
+        const res = await utils.sendRawTX(stakeAccountTx.serialize(), web3, connection, this.testNet)
+        return res;
     }
 
     /**
         * @param validatorAddr The validator's address
         * @returns Void. Prints the transaction hash of the successful operation or error log 
         */
-    public async delegate(validatorAddr: string){
+    public async delegate(validatorAddr: string): Promise<boolean>{
         
 
         const connection = await this.getConnection();
@@ -147,13 +148,14 @@ export class SolStaker {
         
         
         
-        await utils.sendRawTX(delegateTransaction.serialize(), web3, connection, this.testNet);
+        const res = await utils.sendRawTX(delegateTransaction.serialize(), web3, connection, this.testNet);
+        return res;
     }
 
     /**
         * @returns Void. Prints the transaction hash of the successful operation or error log
         */
-    public async deactivate(){
+    public async deactivate(): Promise<boolean>{
 
         const mainAddr = await this.fireblocks.getDepositAddresses(this.vaultAccountId, this.testNet? 'SOL_TEST': 'SOL');
         const mainPubKey = new web3.PublicKey(mainAddr[0].address)
@@ -188,14 +190,15 @@ export class SolStaker {
 
         deactivateTx.partialSign(authorityKeyPair);
         
-        await utils.sendRawTX(deactivateTx.serialize(), web3, connection, this.testNet);
+        const res = await utils.sendRawTX(deactivateTx.serialize(), web3, connection, this.testNet);
+        return res;
 
     }
     /**
         * @param amountToWithdraw Optional. The amount to withdraw(if was not provided - withdraw the entire balance)
         * @returns Void. Prints the transaction hash of the successful operation or error log 
         */
-    public async withdrawStakedBalance(amountToWithdraw?: string){
+    public async withdrawStakedBalance(amountToWithdraw?: string): Promise<boolean>{
         
         let amount;
         let entireBalance: boolean = false;
@@ -245,7 +248,8 @@ export class SolStaker {
         withdrawTx.addSignature(mainPubKey, Buffer.from((signature.signedMessages[0].signature.fullSig), 'hex'));
         withdrawTx.partialSign(authorityKeyPair);
 
-        await utils.sendRawTX(withdrawTx.serialize(), web3, connection, this.testNet);
+        const res = await utils.sendRawTX(withdrawTx.serialize(), web3, connection, this.testNet);
+        return res;
     }
     /**
         * Prints the total staked and the rewards information.  
