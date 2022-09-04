@@ -169,6 +169,7 @@ async function waitToProceed(){
                 }else{
                     throw new Error("Cannot withdraw an amount greater than the actual balance")
                 }
+                await waitToProceed(); 
                 break;
             case("Get Rewards info"):
                 await solStaker.getStakedBalance();
