@@ -9,7 +9,7 @@ require('dotenv').config();
 
 var DEVNET = true;
 const apiSecret = fs.readFileSync((process.env.API_SECRET_PATH), "utf8"); 
-const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY);
+const fireblocks = new FireblocksSDK(apiSecret, process.env.API_KEY, "https://sandbox-api.fireblocks.io");
 
 async function waitToProceed(){
     await inquirer.prompt(
@@ -105,7 +105,7 @@ async function waitToProceed(){
                     name: "validator",
                     message: 'Enter the validator address'
                 });
-                if((delegate.validator).length != 44)
+                if((delegate.validator).length > 44 &&(delegate.validator).length < 32)
                     throw new Error("Wrong validator address input")
 
                 const confirmDelegate = await inquirer.prompt<any>({
