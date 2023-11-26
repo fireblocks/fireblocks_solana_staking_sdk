@@ -1,3 +1,8 @@
+### Deprecation Notice ⚠️
+
+This SDK is deprecated. We recommend Fireblocks users to work with Solana native staking in [Fireblocks SDK](https://github.com/fireblocks/fireblocks-sdk-js).\
+In the coming months this repository will be moved to archive.
+
 # Fireblocks Solana Staking SDK
 
 Solana staking in Fireblocks
